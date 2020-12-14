@@ -1,0 +1,68 @@
+#include <string>
+#include <vector>
+#include <queue>
+#include <algorithm>
+
+using namespace std;
+
+int solution(vector<vector<int>> jobs) { 
+    auto comp = [] (pair<int, int> x, pair<int, int> y) {
+        return x.second > y.second;
+    };
+    priority_queue <pair<int, int>, vector<pair<int,int>>, decltype(comp)> toDoList(comp);
+    pair<int, int> doing(0,0);
+    int answer = 0;
+    int index = 0;
+    int time = 0;
+    int sum = 0;
+    int jobSize = jobs.size();
+    sort(jobs.begin(), jobs.end()); // 작업 요청 순서대로 안들어올떄 쓰기.
+    
+    while (index < jobSize || doing.second != 0) {
+        if (doing.second == 0) {
+            if (!toDoList.empty()) {
+                doing.first = toDoList.top().first;
+                time = doing.first;
+                doing.second = toDoList.top().second;
+                toDoList.pop();
+            } else {
+                int temp = jobs[index][0];
+                time = temp;
+                
+                while (index < jobSize && temp == jobs[index][0]) {
+                    toDoList.push(pair <int, int> (jobs[index][0], jobs[index++][1]));
+                }
+                doing.first = toDoList.top().first;
+                time = doing.first;
+                doing.second = toDoList.top().second;
+                toDoList.pop();
+            }
+        }
+        else if (index < jobSize && doing.second + time > jobs[index][0]) { // 0과 0일때 혹은 다음 것이 없을때 이때가 중요 
+            int temp = jobs[index][0];
+            doing.second -= temp - time; 
+            time = temp;
+            
+            while (index < jobSize && temp == jobs[index][0]) {
+                toDoList.push(pair <int, int> (jobs[index][0], jobs[index++][1]));
+            }
+        } else {
+            time += doing.second;
+            sum += time - doing.first;
+            doing.second = 0;
+            
+            if (!toDoList.empty()) {
+                doing.first = toDoList.top().first;
+                doing.second = toDoList.top().second;
+                toDoList.pop();
+            }
+        }
+    }
+    
+    answer = sum / jobSize;
+    return answer;
+}
+// 1안. 시간 단축 -> job이 들어 왓을때까지 돌린다. time은 그만큼 더해주고
+// 안의 값을 그만큼 빼주는데, 여기서 문제는 doing.second값에 따라서 가주는 것이다. 
+
+// 2안. doing에 있는지 없는지 확인만 하고, 끝나는 시간을 입력해둠.
