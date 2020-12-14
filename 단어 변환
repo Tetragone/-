@@ -1,0 +1,64 @@
+#include <string>
+#include <vector>
+#include <queue>
+
+using namespace std;
+bool visited[59] = { 0 };
+queue<pair<string, int>> forBFS;
+
+int solution(string begin, string target, vector<string> words) {
+    int answer = 0;
+    int wSize = words.size();
+    int stSize = begin.size();
+    forBFS.push(pair<string,int>(begin, 0));
+    
+    while (!forBFS.empty()) {
+        string temp = forBFS.front().first;
+        int count = forBFS.front().second;
+        forBFS.pop();
+        
+        if (temp == target) {
+            answer = count;
+            break;
+        }
+        
+        for (int i = 0; i < wSize; i++) {
+            if (visited[i] == false) {
+                int diff = 0;
+                
+                for (int j = 0; j < stSize; j++) {
+                    if (words[i][j] != temp[j]) diff++;
+                }
+                
+                if (diff == 1) {
+                    visited[i] = true;
+                    forBFS.push(pair<string,int>(words[i], count + 1));
+                }
+            }
+        }
+    }
+     
+    return answer;
+}
+
+int DFS (string t, vector<string> w, string index, int count, int size) {
+    if (t == index) {
+        return count;
+    } else if (count >= size) {
+        return 0;
+    } else {
+        int result = 0;
+        
+        for (int i = 0; i < size; i++) {
+            if(visited[i] == false) {
+                
+            }
+        }
+        
+        return result;
+    }
+}
+// 하나만 다른것들을 stack에 넣음. 
+// 목표와 같아진다면 그만, 아니라면 하나만 다른것을 stack에 넣음. 
+// 단지 vistied[]에 있는 것을 방문 x 
+// DFS -> BFS로 바꾸면 끝.
