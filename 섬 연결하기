@@ -1,0 +1,81 @@
+#include <string>
+#include <vector>
+#include <algorithm>
+#include <iostream>
+
+using namespace std;
+
+pair<int, int> findSmallCost (vector<int>);
+
+int solution(int n, vector<vector<int>> costs) {
+    vector<vector<int>> graph(n, vector<int> (n));
+    vector<int> linked(n);
+    int answer = 0;
+    
+    for (auto x : costs) {
+        graph[x[0]][x[1]] = x[2];
+        graph[x[1]][x[0]] = x[2];
+    }
+    
+    linked[0] = 1;
+    for (int j = 0; j < n - 1; j++) {
+        pair<int, int> minPair(0,0);
+        int location;
+        
+        for (int i = 0; i < n; i++) {
+            pair<int, int> tempPair;
+
+            if (linked[i] == 1) {
+                tempPair = findSmallCost(graph[i]);
+
+                if (minPair.first == 0) {
+                    minPair.first = tempPair.first;
+                    minPair.second = tempPair.second;
+                }
+                else if (tempPair.first != 0 && minPair.first > tempPair.first) {
+                    minPair.first = tempPair.first;
+                    minPair.second = tempPair.second;
+                }
+            }
+        }
+        
+        cout << minPair.first << " " << minPair.second <<"\n";
+        
+        for (int i = 0; i < n; i++) {
+            if (linked[i] == 1) {
+                graph[i][minPair.second] = 0;
+                graph[minPair.second][i] = 0;
+            }
+        }
+        linked[minPair.second] = 1;
+        answer += minPair.first;
+    }
+    return answer;
+}
+
+pair<int, int> findSmallCost (vector<int> parameter) {
+    int minValue = 0;
+    int length = parameter.size();
+    int point;
+    pair<int, int> result;
+    for (int i = 0; i < length; i++) {
+        if (minValue == 0) {
+            minValue = parameter[i];
+            point = i;
+        } else if (parameter[i] != 0) {
+            if (minValue > parameter[i]) {
+                minValue = parameter[i];
+                point = i;
+            }
+        }
+    }
+    
+    result.first = minValue;
+    result.second = point;
+    
+    return result;
+}
+// 제일 작은 값을 가지는 다리부터 연결하고 연결된 두점을 저장. 
+// 연결된 두점을 pair형식으로 저장?
+
+// 2안 현재 연결 된것중에 제일 작은 것
