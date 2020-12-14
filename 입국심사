@@ -1,0 +1,57 @@
+#include <string>
+#include <vector>
+#include <algorithm>
+#include <iostream>
+
+using namespace std;
+
+long long solution(int n, vector<int> times) {
+    long long answer = n;
+    int maxValue = 0;
+    int length = times.size();
+    long long left = n;
+    
+    for (int i = 0; i < length; i++) {
+        maxValue = max(maxValue, times[i]);
+    }
+    
+    answer *= maxValue;
+    long long div = answer;
+    
+    while (div) {
+        left = n;
+        
+        for (int i = 0; i < length; i++) { // 같은 값이 있을때가 문제!
+            left -= answer / times[i];
+            
+            if (left < 0) break;
+        }
+        
+        if (div != 1) div = (div + 1) / 2;
+        else div = 0;
+        
+        if (left < 0) answer -= div;
+        else if (left == 0) break;
+        else answer += div;
+    }
+    
+    if (left == 0) {
+        long long minLeft = maxValue;
+        
+        for (int i = 0; i < length; i++) {
+            minLeft = min(minLeft, answer % times[i]);
+        }
+    
+        answer -= minLeft;
+    } else if (left > 0) {
+        while (left > 0) {
+            left = n;
+            answer++;
+            
+            for (int i = 0; i < length; i++) {
+                left -= answer / times[i];
+            }
+        }
+    }
+    return answer;
+}
