@@ -1,0 +1,58 @@
+#include <string>
+#include <vector>
+#include <algorithm>
+#include <unordered_map>
+#include <stack>
+
+using namespace std;
+
+bool used[40000] = {0};
+stack<int> forDFS;
+vector<string> result;
+vector<string> insert;
+bool complete = false;
+
+void DFS (unordered_map<string, vector<pair<string, int>>> graph, int size, string now);
+
+vector<string> solution(vector<vector<string>> tickets) {
+    unordered_map<string, vector<pair<string, int>>> graph;
+    vector<string> answer;
+    int totalTickets = tickets.size();
+    
+    for (int i = 0; i < totalTickets; i++) {
+        graph[tickets[i][0]].push_back(pair<string, int>(tickets[i][1], i));
+    }
+    
+    for (auto &x : graph) {
+        sort(x.second.begin(), x.second.end(), [] (pair<string, int> x, pair<string, int> y) {
+            return !(x.first > y.first);
+        });
+    }
+    
+    DFS(graph, totalTickets + 1, "ICN");
+    answer = insert;
+    return answer;
+}
+
+void DFS (unordered_map<string, vector<pair<string, int>>> graph, int size, string now) {
+    result.push_back(now);
+    
+    if (result.size() == size && complete == false) {
+        for (int i = 0; i < size; i++) {
+            insert.push_back(result[i]);
+        }
+        complete = true;
+        return;
+    } else {
+        int length = graph[now].size();
+        
+        for (int i = 0; i < length; i++) {
+            if (used[graph[now][i].second] == false) {
+                used[graph[now][i].second] = true;
+                DFS(graph, size, graph[now][i].first);
+                used[graph[now][i].second] = false;
+            }
+        }
+    }
+    result.pop_back();
+}
