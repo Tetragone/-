@@ -1,1 +1,16 @@
 모든 레코드 조회하기 - SELECT * from ANIMAL_INS order by ANIMAL_ID asc
+역순 정렬하기 - SELECT NAME, DATETIME from ANIMAL_INS order by ANIMAL_ID desc
+아픈 동물 찾기 - SELECT ANIMAL_ID, NAME from ANIMAL_INS where INTAKE_CONDITION = 'sick' order by ANIMAL_ID asc
+어린 동물 찾기 - SELECT ANIMAL_ID, NAME from ANIMAL_INS where INTAKE_CONDITION != 'Aged' order by ANIMAL_ID asc
+동물의 아이디와 이름 - SELECT ANIMAL_ID, NAME from ANIMAL_INS order by ANIMAL_ID asc
+여러 기준으로 정렬하기 - SELECT ANIMAL_ID, NAME, DATETIME from ANIMAL_INS order by NAME asc, DATETIME desc
+최댓값 구하기 - SELECT MAX(DATETIME) from ANIMAL_INS 
+최솟값 구하기 - SELECT min(DATETIME) from ANIMAL_INS 
+동물 수 구하기 - SELECT count(*) from ANIMAL_INS  
+중복 제거하기 - select count (distinct NAME) from ANIMAL_INS 
+고양이와 개는 몇마리 있을까? - SELECT ANIMAL_TYPE, count(*) count from ANIMAL_INS group by ANIMAL_TYPE order by ANIMAL_TYPE asc
+동명 동물 수 찾기 - SELECT NAME, count(NAME) count from ANIMAL_INS group by (NAME) having count(NAME) > 1 order by NAME asc 
+이름 없는 동물의 아이디 - SELECT ANIMAL_ID from ANIMAL_INS where NAME is null
+이름이 있는 동물의 아이디 - SELECT ANIMAL_ID from ANIMAL_INS where NAME is not null
+null 처리하기 - SELECT ANIMAL_TYPE, IFNULL(NAME, "No name"), SEX_UPON_INTAKE from ANIMAL_INS
+상위 n개의 레코드 - SELECT NAME from ANIMAL_INS order by DATETIME asc limit 1
